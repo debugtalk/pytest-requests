@@ -65,3 +65,14 @@ def test_httpbin_extract():
 
     accept_type = api_run.extract("json().headers.Accept")
     assert accept_type == 'application/json'
+
+
+def test_httpbin_setcookies():
+    api_run = ApiHttpBinGetCookies()\
+        .set_cookie("freeform1", "123")\
+        .set_cookie("freeform2", "456")\
+        .run()
+    freeform1 = api_run.extract("json().cookies.freeform1")
+    freeform2 = api_run.extract("json().cookies.freeform2")
+    assert freeform1 == "123"
+    assert freeform2 == "456"
