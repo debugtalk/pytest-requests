@@ -1,4 +1,4 @@
-from hogwarts_apitest.api import BaseApi
+from pytest_requests.api import BaseApi
 
 
 class ApiHttpbinGet(BaseApi):
@@ -24,6 +24,7 @@ class ApiHttpBinGetCookies(BaseApi):
     method = "GET"
     params = {}
     headers = {"accept": "application/json"}
+
 
 class ApiHttpBinGetSetCookies(BaseApi):
 

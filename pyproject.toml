@@ -1,9 +1,9 @@
 [tool.poetry]
-name = "hogwarts-apitest"
+name = "pytest-requests"
 version = "0.1.0"
-description = "API test framework with pytest and requests."
+description = "HTTP(S) testing with pytest and requests."
 authors = ["debugtalk <mail@debugtalk.com>"]
-license = "apache-2.0"
+license = "Apache-2.0"
 
 [tool.poetry.dependencies]
 python = "^3.5"

@@ -1,7 +1,7 @@
 from tests.api.httpbin import *
 
 def test_version():
-    from hogwarts_apitest import __version__
+    from pytest_requests import __version__
     assert isinstance(__version__, str)
 
 
@@ -97,13 +97,16 @@ def test_httpbin_parameters_extract():
 
 
 def test_httpbin_login_status():
+    import requests
+    session = requests.sessions.Session()
+
     # step1: login and get cookie
-    ApiHttpBinGetSetCookies().set_params(freeform="567").run()
+    ApiHttpBinGetSetCookies().set_params(freeform="567").run(session)
 
     # step2: request another api, check cookie
     resp = ApiHttpBinPost()\
         .set_json({"abc": 123})\
-        .run().get_response()
+        .run(session).get_response()
     request_headers = resp.request.headers
 
     assert "freeform=567" in request_headers["Cookie"]
