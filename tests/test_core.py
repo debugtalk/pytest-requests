@@ -7,33 +7,33 @@ def test_version():
 
 def test_httpbin_get():
     ApiHttpbinGet().run()\
-        .validate("status_code", 200)\
-        .validate("headers.server", "nginx")\
-        .validate("json().url", "https://httpbin.org/get")\
-        .validate("json().args", {})\
-        .validate("json().headers.Accept", 'application/json')
+        .assert_("status_code", 200)\
+        .assert_("headers.server", "nginx")\
+        .assert_("json().url", "https://httpbin.org/get")\
+        .assert_("json().args", {})\
+        .assert_("json().headers.Accept", 'application/json')
 
 
 def test_httpbin_get_with_prams():
     ApiHttpbinGet()\
         .set_params(abc=123, xyz=456)\
         .run()\
-        .validate("status_code", 200)\
-        .validate("headers.server", "nginx")\
-        .validate("json().url", "https://httpbin.org/get?abc=123&xyz=456")\
-        .validate("json().headers.Accept", 'application/json')
+        .assert_("status_code", 200)\
+        .assert_("headers.server", "nginx")\
+        .assert_("json().url", "https://httpbin.org/get?abc=123&xyz=456")\
+        .assert_("json().headers.Accept", 'application/json')
 
 
 def test_httpbin_post_json():
     ApiHttpBinPost()\
         .set_json({"abc": 456})\
         .run()\
-        .validate("status_code", 200)\
-        .validate("headers.server", "nginx")\
-        .validate("json().url", "https://httpbin.org/post")\
-        .validate("json().headers.Accept", 'application/json')\
-        .validate("json().headers.Content-Type", 'application/json')\
-        .validate("json().json.abc", 456)
+        .assert_("status_code", 200)\
+        .assert_("headers.server", "nginx")\
+        .assert_("json().url", "https://httpbin.org/post")\
+        .assert_("json().headers.Accept", 'application/json')\
+        .assert_("json().headers.Content-Type", 'application/json')\
+        .assert_("json().json.abc", 456)
 
 
 def test_httpbin_post_form_data():
@@ -41,12 +41,12 @@ def test_httpbin_post_form_data():
         .set_header("content-type", "application/x-www-form-urlencoded; charset=utf-8")\
         .set_data("abc=123")\
         .run()\
-        .validate("status_code", 200)\
-        .validate("headers.server", "nginx")\
-        .validate("json().url", "https://httpbin.org/post")\
-        .validate("json().headers.Accept", 'application/json')\
-        .validate("json().headers.Content-Type", "application/x-www-form-urlencoded; charset=utf-8")\
-        .validate("json().form.abc", "123")
+        .assert_("status_code", 200)\
+        .assert_("headers.server", "nginx")\
+        .assert_("json().url", "https://httpbin.org/post")\
+        .assert_("json().headers.Accept", 'application/json')\
+        .assert_("json().headers.Content-Type", "application/x-www-form-urlencoded; charset=utf-8")\
+        .assert_("json().form.abc", "123")
 
 
 def test_httpbin_post_data_in_json():
@@ -54,12 +54,12 @@ def test_httpbin_post_data_in_json():
         .set_header("content-type", "application/json")\
         .set_data({"abc": "123"})\
         .run()\
-        .validate("status_code", 200)\
-        .validate("headers.server", "nginx")\
-        .validate("json().url", "https://httpbin.org/post")\
-        .validate("json().headers.Accept", 'application/json')\
-        .validate("json().headers.Content-Type", "application/json")\
-        .validate("json().json.abc", "123")
+        .assert_("status_code", 200)\
+        .assert_("headers.server", "nginx")\
+        .assert_("json().url", "https://httpbin.org/post")\
+        .assert_("json().headers.Accept", 'application/json')\
+        .assert_("json().headers.Content-Type", "application/json")\
+        .assert_("json().json.abc", "123")
 
 
 def test_httpbin_parameters_share():
@@ -67,19 +67,19 @@ def test_httpbin_parameters_share():
     ApiHttpbinGet()\
         .set_params(user_id=user_id)\
         .run()\
-        .validate("status_code", 200)\
-        .validate("headers.server", "nginx")\
-        .validate("json().url", "https://httpbin.org/get?user_id={}".format(user_id))\
-        .validate("json().headers.Accept", 'application/json')
+        .assert_("status_code", 200)\
+        .assert_("headers.server", "nginx")\
+        .assert_("json().url", "https://httpbin.org/get?user_id={}".format(user_id))\
+        .assert_("json().headers.Accept", 'application/json')
 
     ApiHttpBinPost()\
         .set_json({"user_id": user_id})\
         .run()\
-        .validate("status_code", 200)\
-        .validate("headers.server", "nginx")\
-        .validate("json().url", "https://httpbin.org/post")\
-        .validate("json().headers.Accept", 'application/json')\
-        .validate("json().json.user_id", "adk129")
+        .assert_("status_code", 200)\
+        .assert_("headers.server", "nginx")\
+        .assert_("json().url", "https://httpbin.org/post")\
+        .assert_("json().headers.Accept", 'application/json')\
+        .assert_("json().json.user_id", "adk129")
 
 
 def test_httpbin_extract():
@@ -117,11 +117,11 @@ def test_httpbin_parameters_extract():
     ApiHttpBinPost()\
         .set_json({"freeform": freeform})\
         .run()\
-        .validate("status_code", 200)\
-        .validate("headers.server", "nginx")\
-        .validate("json().url", "https://httpbin.org/post")\
-        .validate("json().headers.Accept", 'application/json')\
-        .validate("json().json.freeform", freeform)
+        .assert_("status_code", 200)\
+        .assert_("headers.server", "nginx")\
+        .assert_("json().url", "https://httpbin.org/post")\
+        .assert_("json().headers.Accept", 'application/json')\
+        .assert_("json().json.freeform", freeform)
 
 
 def test_httpbin_login_status():

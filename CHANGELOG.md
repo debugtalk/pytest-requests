@@ -10,7 +10,7 @@
 - feat: prepare request, include params, headers, cookies, data/json
 - feat: make request with requests.request
 - feat: extract response status_code, headers field, field in json body
-- feat: validate equivalence for extracted field with expected value
+- feat: assert equivalence for extracted field with expected value
 - feat: share public parameters in multiple apis of testcase
 - feat: parameters correlation in single testcase
 - feat: session sharing in single testcase

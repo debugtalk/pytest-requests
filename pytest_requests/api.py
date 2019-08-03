@@ -92,7 +92,7 @@ class BaseApi(object):
 
         return value
 
-    def validate(self, key, expected_value):
+    def assert_(self, key, expected_value):
         actual_value = self.extract(key)
         assert actual_value == expected_value
         return self
