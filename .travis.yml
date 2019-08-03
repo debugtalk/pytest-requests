@@ -12,7 +12,7 @@ install:
   - pip install poetry
   - poetry install -vvv
 script:
-  - poetry run coverage run --source=pytest_requests -m pytest -v
+  - poetry run coverage run --source=pytest_requests -m pytest -v --showlocals
   - poetry run coverage report -m
 after_success:
   - poetry run coveralls
