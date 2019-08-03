@@ -24,8 +24,8 @@ class ApiHttpBinPost(BaseApi):
 
 def test_httpbin_get():
     ApiHttpbinGet().run()\
-        .validate("status_code", 200)
-        # .validate("headers.server", "nginx")\
+        .validate("status_code", 200)\
+        .validate("headers.server", "nginx")\
         # .validate("json.url", "https://httpbin.org/get")
 
 
@@ -33,11 +33,13 @@ def test_httpbin_get_with_prams():
     ApiHttpbinGet()\
         .set_params(abc=123, xyz=456)\
         .run()\
-        .validate("status_code", 200)
+        .validate("status_code", 200)\
+        .validate("headers.server", "nginx")
 
 
 def test_httpbin_post():
     ApiHttpBinPost()\
         .set_json({"abc": 456})\
         .run()\
-        .validate("status_code", 200)
+        .validate("status_code", 200)\
+        .validate("headers.server", "nginx")
