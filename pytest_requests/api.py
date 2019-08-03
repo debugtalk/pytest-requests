@@ -32,6 +32,11 @@ class BaseApi(object):
         self.cookies.update({key: value})
         return self
 
+    def set_cookies(self, **kwargs):
+        self.cookies = self.cookies or {}
+        self.cookies.update(kwargs)
+        return self
+
     def set_json(self, json_data):
         self.json = json_data
         return self
