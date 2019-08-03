@@ -1,25 +1,8 @@
-from hogwarts_apitest.api import BaseApi
+from tests.api.httpbin import *
 
 def test_version():
     from hogwarts_apitest import __version__
     assert isinstance(__version__, str)
-
-class ApiHttpbinGet(BaseApi):
-
-    url = "http://httpbin.org/get"
-    params = {}
-    method = "GET"
-    headers = {"accept": "application/json"}
-
-
-class ApiHttpBinPost(BaseApi):
-
-    url = "http://httpbin.org/post"
-    method = "POST"
-    params = {}
-    headers = {"accept": "application/json"}
-    data = "abc=123"
-    json = {"abc": 123}
 
 
 def test_httpbin_get():
