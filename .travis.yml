@@ -14,5 +14,5 @@ install:
 script:
   - poetry run coverage run --source=hogwarts_apitest -m pytest -v
   - poetry run coverage report -m
-# after_success:
-#   - poetry run coveralls
+after_success:
+  - poetry run coveralls
