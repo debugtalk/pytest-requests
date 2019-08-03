@@ -56,5 +56,12 @@ def test_httpbin_parameters_share():
 
 
 def test_httpbin_extract():
-    status_code = ApiHttpbinGet().run().extract("status_code")
+    api_run = ApiHttpbinGet().run()
+    status_code = api_run.extract("status_code")
     assert status_code == 200
+
+    server = api_run.extract("headers.server")
+    assert server == "nginx"
+
+    accept_type = api_run.extract("json().headers.Accept")
+    assert accept_type == 'application/json'
