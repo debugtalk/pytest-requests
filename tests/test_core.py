@@ -53,3 +53,8 @@ def test_httpbin_parameters_share():
         .validate("json().url", "https://httpbin.org/post")\
         .validate("json().headers.Accept", 'application/json')\
         .validate("json().json.user_id", "adk129")
+
+
+def test_httpbin_extract():
+    status_code = ApiHttpbinGet().run().extract("status_code")
+    assert status_code == 200
