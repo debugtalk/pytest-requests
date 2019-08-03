@@ -1,5 +1,8 @@
 
+import json
+
 import requests
+
 
 class BaseApi(object):
 
@@ -27,6 +30,11 @@ class BaseApi(object):
         self.params = params
         return self
 
+    def set_header(self, key, value):
+        self.headers = self.headers or {}
+        self.headers.update({key: value})
+        return self
+
     def set_cookie(self, key, value):
         self.cookies = self.cookies or {}
         self.cookies.update({key: value})
@@ -37,11 +45,19 @@ class BaseApi(object):
         self.cookies.update(kwargs)
         return self
 
+    def set_data(self, data):
+        self.data = data
+        return self
+
     def set_json(self, json_data):
         self.json = json_data
         return self
 
     def run(self, session = None):
+        if isinstance(self.data, dict) and self.headers and\
+            self.headers.get("content-type") == "application/json":
+            self.data = json.dumps(self.data)
+
         session = session or requests.sessions.Session()
         self.response = session.request(
             self.method,
