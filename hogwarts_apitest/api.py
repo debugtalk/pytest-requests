@@ -1,6 +1,8 @@
 
 import requests
 
+session = requests.sessions.Session()
+
 class BaseApi(object):
 
     method = "GET"
@@ -10,6 +12,9 @@ class BaseApi(object):
     cookies = {}
     data = {}
     json = {}
+
+    def __init__(self):
+        self.response = None
 
     def set_params(self, **params):
         self.params = params
@@ -28,7 +33,7 @@ class BaseApi(object):
         return self
 
     def run(self):
-        self.response = requests.request(
+        self.response = session.request(
             self.method,
             self.url,
             params=self.params,
@@ -56,3 +61,6 @@ class BaseApi(object):
         actual_value = self.extract(key)
         assert actual_value == expected_value
         return self
+
+    def get_response(self):
+        return self.response
