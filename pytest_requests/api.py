@@ -97,5 +97,8 @@ class BaseApi(object):
         assert actual_value == expected_value
         return self
 
+    def assert_status_code(self, expected_value):
+        return self.assert_("status_code", expected_value)
+
     def get_response(self):
         return self.response

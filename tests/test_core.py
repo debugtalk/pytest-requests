@@ -7,7 +7,7 @@ def test_version():
 
 def test_httpbin_get():
     ApiHttpbinGet().run()\
-        .assert_("status_code", 200)\
+        .assert_status_code(200)\
         .assert_("headers.server", "nginx")\
         .assert_("json().url", "https://httpbin.org/get")\
         .assert_("json().args", {})\
@@ -18,7 +18,7 @@ def test_httpbin_get_with_prams():
     ApiHttpbinGet()\
         .set_params(abc=123, xyz=456)\
         .run()\
-        .assert_("status_code", 200)\
+        .assert_status_code(200)\
         .assert_("headers.server", "nginx")\
         .assert_("json().url", "https://httpbin.org/get?abc=123&xyz=456")\
         .assert_("json().headers.Accept", 'application/json')
@@ -28,7 +28,7 @@ def test_httpbin_post_json():
     ApiHttpBinPost()\
         .set_json({"abc": 456})\
         .run()\
-        .assert_("status_code", 200)\
+        .assert_status_code(200)\
         .assert_("headers.server", "nginx")\
         .assert_("json().url", "https://httpbin.org/post")\
         .assert_("json().headers.Accept", 'application/json')\
@@ -41,7 +41,7 @@ def test_httpbin_post_form_data():
         .set_header("content-type", "application/x-www-form-urlencoded; charset=utf-8")\
         .set_data("abc=123")\
         .run()\
-        .assert_("status_code", 200)\
+        .assert_status_code(200)\
         .assert_("headers.server", "nginx")\
         .assert_("json().url", "https://httpbin.org/post")\
         .assert_("json().headers.Accept", 'application/json')\
@@ -54,7 +54,7 @@ def test_httpbin_post_data_in_json():
         .set_header("content-type", "application/json")\
         .set_data({"abc": "123"})\
         .run()\
-        .assert_("status_code", 200)\
+        .assert_status_code(200)\
         .assert_("headers.server", "nginx")\
         .assert_("json().url", "https://httpbin.org/post")\
         .assert_("json().headers.Accept", 'application/json')\
@@ -67,7 +67,7 @@ def test_httpbin_parameters_share():
     ApiHttpbinGet()\
         .set_params(user_id=user_id)\
         .run()\
-        .assert_("status_code", 200)\
+        .assert_status_code(200)\
         .assert_("headers.server", "nginx")\
         .assert_("json().url", "https://httpbin.org/get?user_id={}".format(user_id))\
         .assert_("json().headers.Accept", 'application/json')
@@ -75,7 +75,7 @@ def test_httpbin_parameters_share():
     ApiHttpBinPost()\
         .set_json({"user_id": user_id})\
         .run()\
-        .assert_("status_code", 200)\
+        .assert_status_code(200)\
         .assert_("headers.server", "nginx")\
         .assert_("json().url", "https://httpbin.org/post")\
         .assert_("json().headers.Accept", 'application/json')\
@@ -117,7 +117,7 @@ def test_httpbin_parameters_extract():
     ApiHttpBinPost()\
         .set_json({"freeform": freeform})\
         .run()\
-        .assert_("status_code", 200)\
+        .assert_status_code(200)\
         .assert_("headers.server", "nginx")\
         .assert_("json().url", "https://httpbin.org/post")\
         .assert_("json().headers.Accept", 'application/json')\
