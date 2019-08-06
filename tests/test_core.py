@@ -8,10 +8,10 @@ def test_version():
 def test_httpbin_get():
     ApiHttpbinGet().run()\
         .assert_status_code(200)\
-        .assert_("headers.server", "nginx")\
-        .assert_("json().url", "https://httpbin.org/get")\
-        .assert_("json().args", {})\
-        .assert_("json().headers.Accept", 'application/json')
+        .assert_header("server", "nginx")\
+        .assert_body("url", "https://httpbin.org/get")\
+        .assert_body("args", {})\
+        .assert_body("headers.Accept", 'application/json')
 
 
 def test_httpbin_get_with_prams():
@@ -19,9 +19,22 @@ def test_httpbin_get_with_prams():
         .set_params(abc=123, xyz=456)\
         .run()\
         .assert_status_code(200)\
+        .assert_header("server", "nginx")\
+        .assert_body("url", "https://httpbin.org/get?abc=123&xyz=456")\
+        .assert_body("headers.Accept", 'application/json')
+
+
+def test_with_raw_assert():
+    ApiHttpBinPost()\
+        .set_json({"abc": 456})\
+        .run()\
+        .assert_("status_code", 200)\
         .assert_("headers.server", "nginx")\
-        .assert_("json().url", "https://httpbin.org/get?abc=123&xyz=456")\
-        .assert_("json().headers.Accept", 'application/json')
+        .assert_("headers.content-Type", "application/json")\
+        .assert_("body.url", "https://httpbin.org/post")\
+        .assert_("body.headers.Accept", 'application/json')\
+        .assert_('body.headers."Content-Type"', 'application/json')\
+        .assert_("body.json.abc", 456)
 
 
 def test_httpbin_post_json():
@@ -29,11 +42,12 @@ def test_httpbin_post_json():
         .set_json({"abc": 456})\
         .run()\
         .assert_status_code(200)\
-        .assert_("headers.server", "nginx")\
-        .assert_("json().url", "https://httpbin.org/post")\
-        .assert_("json().headers.Accept", 'application/json')\
-        .assert_("json().headers.Content-Type", 'application/json')\
-        .assert_("json().json.abc", 456)
+        .assert_header("server", "nginx")\
+        .assert_header("content-Type", "application/json")\
+        .assert_body("url", "https://httpbin.org/post")\
+        .assert_body("headers.Accept", 'application/json')\
+        .assert_body('headers."Content-Type"', 'application/json')\
+        .assert_body("json.abc", 456)
 
 
 def test_httpbin_post_form_data():
@@ -42,11 +56,11 @@ def test_httpbin_post_form_data():
         .set_data("abc=123")\
         .run()\
         .assert_status_code(200)\
-        .assert_("headers.server", "nginx")\
-        .assert_("json().url", "https://httpbin.org/post")\
-        .assert_("json().headers.Accept", 'application/json')\
-        .assert_("json().headers.Content-Type", "application/x-www-form-urlencoded; charset=utf-8")\
-        .assert_("json().form.abc", "123")
+        .assert_header("server", "nginx")\
+        .assert_body("url", "https://httpbin.org/post")\
+        .assert_body("headers.Accept", 'application/json')\
+        .assert_body('headers."Content-Type"', "application/x-www-form-urlencoded; charset=utf-8")\
+        .assert_body("form.abc", "123")
 
 
 def test_httpbin_post_data_in_json():
@@ -55,11 +69,11 @@ def test_httpbin_post_data_in_json():
         .set_data({"abc": "123"})\
         .run()\
         .assert_status_code(200)\
-        .assert_("headers.server", "nginx")\
-        .assert_("json().url", "https://httpbin.org/post")\
-        .assert_("json().headers.Accept", 'application/json')\
-        .assert_("json().headers.Content-Type", "application/json")\
-        .assert_("json().json.abc", "123")
+        .assert_header("server", "nginx")\
+        .assert_body("url", "https://httpbin.org/post")\
+        .assert_body("headers.Accept", 'application/json')\
+        .assert_body('headers."Content-Type"', "application/json")\
+        .assert_body("json.abc", "123")
 
 
 def test_httpbin_parameters_share():
@@ -68,29 +82,29 @@ def test_httpbin_parameters_share():
         .set_params(user_id=user_id)\
         .run()\
         .assert_status_code(200)\
-        .assert_("headers.server", "nginx")\
-        .assert_("json().url", "https://httpbin.org/get?user_id={}".format(user_id))\
-        .assert_("json().headers.Accept", 'application/json')
+        .assert_header("server", "nginx")\
+        .assert_body("url", "https://httpbin.org/get?user_id={}".format(user_id))\
+        .assert_body("headers.Accept", 'application/json')
 
     ApiHttpBinPost()\
         .set_json({"user_id": user_id})\
         .run()\
         .assert_status_code(200)\
-        .assert_("headers.server", "nginx")\
-        .assert_("json().url", "https://httpbin.org/post")\
-        .assert_("json().headers.Accept", 'application/json')\
-        .assert_("json().json.user_id", "adk129")
+        .assert_header("server", "nginx")\
+        .assert_body("url", "https://httpbin.org/post")\
+        .assert_body("headers.Accept", 'application/json')\
+        .assert_body("json.user_id", "adk129")
 
 
 def test_httpbin_extract():
     api_run = ApiHttpbinGet().run()
-    status_code = api_run.extract("status_code")
+    status_code = api_run.extract_response("status_code")
     assert status_code == 200
 
-    server = api_run.extract("headers.server")
+    server = api_run.extract_response("headers.server")
     assert server == "nginx"
 
-    accept_type = api_run.extract("json().headers.Accept")
+    accept_type = api_run.extract_response("body.headers.Accept")
     assert accept_type == 'application/json'
 
 
@@ -100,8 +114,8 @@ def test_httpbin_setcookies():
         "freeform2": "456"
     }
     api_run = ApiHttpBinGetCookies().set_cookies(**cookies).run()
-    freeform1 = api_run.extract("json().cookies.freeform1")
-    freeform2 = api_run.extract("json().cookies.freeform2")
+    freeform1 = api_run.extract_response("body.cookies.freeform1")
+    freeform2 = api_run.extract_response("body.cookies.freeform2")
     assert freeform1 == "123"
     assert freeform2 == "456"
 
@@ -110,7 +124,7 @@ def test_httpbin_parameters_extract():
     freeform = ApiHttpBinGetCookies()\
         .set_cookie("freeform", "123")\
         .run()\
-        .extract("json().cookies.freeform")
+        .extract_response("body.cookies.freeform")
     assert freeform == "123"
 
     # step 2: use value as parameter
@@ -118,10 +132,10 @@ def test_httpbin_parameters_extract():
         .set_json({"freeform": freeform})\
         .run()\
         .assert_status_code(200)\
-        .assert_("headers.server", "nginx")\
-        .assert_("json().url", "https://httpbin.org/post")\
-        .assert_("json().headers.Accept", 'application/json')\
-        .assert_("json().json.freeform", freeform)
+        .assert_header("server", "nginx")\
+        .assert_body("url", "https://httpbin.org/post")\
+        .assert_body("headers.Accept", 'application/json')\
+        .assert_body("json.freeform", freeform)
 
 
 def test_httpbin_login_status():
@@ -135,6 +149,6 @@ def test_httpbin_login_status():
     resp = ApiHttpBinPost()\
         .set_json({"abc": 123})\
         .run(session).get_response()
-    request_headers = resp.request.headers
 
+    request_headers = resp.request.headers
     assert "freeform=567" in request_headers["Cookie"]

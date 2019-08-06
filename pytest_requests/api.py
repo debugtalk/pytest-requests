@@ -3,6 +3,8 @@ import json
 
 import requests
 
+from pytest_requests.response import ResponseObject
+
 
 class BaseApi(object):
 
@@ -24,7 +26,7 @@ class BaseApi(object):
     json = None
 
     def __init__(self):
-        self.response = None
+        self.resp_obj = None
 
     def set_params(self, **params):
         self.params = params
@@ -59,7 +61,7 @@ class BaseApi(object):
             self.data = json.dumps(self.data)
 
         session = session or requests.sessions.Session()
-        self.response = session.request(
+        _resp_obj = session.request(
             self.method,
             self.url,
             params=self.params,
@@ -77,28 +79,59 @@ class BaseApi(object):
             cert=self.cert,
             json=self.json
         )
+        self.resp_obj = ResponseObject(_resp_obj)
         return self
 
-    def extract(self, field):
-        value = self.response
-        for _key in field.split("."):
-            if isinstance(value, requests.Response):
-                if _key == "json()":
-                    value = self.response.json()
-                else:
-                    value = getattr(value, _key)
-            elif isinstance(value, (requests.structures.CaseInsensitiveDict, dict)):
-                value = value[_key]
+    def extract_response(self, field):
+        return self.resp_obj.extract(field)
 
-        return value
-
-    def assert_(self, key, expected_value):
-        actual_value = self.extract(key)
+    def __assert_with_expected(self, actual_value, expected_value):
         assert actual_value == expected_value
         return self
+
+    def assert_(self, field, expected_value):
+        """ universal assertion with expected value
+
+        Params:
+            field (str): any field in response
+                status_code
+                headers.Content-Type
+                body.details[0].name
+
+        """
+        return self.__assert_with_expected(
+            self.resp_obj.extract(field),
+            expected_value
+        )
 
     def assert_status_code(self, expected_value):
         return self.assert_("status_code", expected_value)
 
+    def assert_header(self, field, expected_value):
+        """ assert header filed equivalent to expected value
+
+        Params:
+            field (str): case insensitive string, content-type or Content-Type are both okay.
+            expected_value: expected value in any type
+
+        """
+        return self.__assert_with_expected(
+            self.resp_obj.extract_header(field),
+            expected_value
+        )
+
+    def assert_body(self, field, expected_value):
+        """ assert body filed equivalent to expected value
+
+        Params:
+            field (str): jmespath string
+            expected_value: expected value in any type
+
+        """
+        return self.__assert_with_expected(
+            self.resp_obj.extract_body(field),
+            expected_value
+        )
+
     def get_response(self):
-        return self.response
+        return self.resp_obj
