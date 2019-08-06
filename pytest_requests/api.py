@@ -62,13 +62,18 @@ class BaseApi(object):
         return self
 
     def set_cookie(self, key, value):
-        self.cookies = self.cookies or {}
-        self.cookies.update({key: value})
-        return self
+        """ update request cookie
+        """
+        cookie = {key: value}
+        return self.set_cookies(**cookie)
 
     def set_cookies(self, **kwargs):
-        self.cookies = self.cookies or {}
-        self.cookies.update(kwargs)
+        """ update request cookies
+        """
+        if not hasattr(self, "_cookies"):
+            self._cookies = copy.deepcopy(self.__class__.cookies or {})
+
+        self._cookies.update(kwargs)
         return self
 
     def set_data(self, data):
@@ -92,7 +97,7 @@ class BaseApi(object):
             params=getattr(self, "_params", None) or self.params,
             data=self.data,
             headers=self._headers,
-            cookies=self.cookies,
+            cookies=getattr(self, "_cookies", None) or self.cookies,
             files=self.files,
             auth=self.auth,
             timeout=self.timeout,
