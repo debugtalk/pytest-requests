@@ -9,19 +9,32 @@ def test_httpbin_get():
     ApiHttpbinGet().run()\
         .assert_status_code(200)\
         .assert_header("server", "nginx")\
-        .assert_body("url", "https://httpbin.org/get")\
-        .assert_body("args", {})\
+        .assert_body("url", "https://httpbin.org/get?abc=111&de=222")\
+        .assert_body("args", {"abc": "111", "de": "222"})\
         .assert_body("headers.Accept", 'application/json')
 
 
-def test_httpbin_get_with_prams():
+def test_httpbin_get_with_set_params():
     ApiHttpbinGet()\
         .set_params(abc=123, xyz=456)\
         .run()\
         .assert_status_code(200)\
         .assert_header("server", "nginx")\
-        .assert_body("url", "https://httpbin.org/get?abc=123&xyz=456")\
-        .assert_body("headers.Accept", 'application/json')
+        .assert_body("url", "https://httpbin.org/get?abc=123&de=222&xyz=456")\
+        .assert_body("headers.Accept", 'application/json')\
+        .assert_body("args", {"abc": "123", "de": "222", "xyz": "456"})
+
+
+def test_httpbin_get_with_multiple_set_params():
+    ApiHttpbinGet()\
+        .set_param("abc", 123)\
+        .set_params(xyz=456)\
+        .run()\
+        .assert_status_code(200)\
+        .assert_header("server", "nginx")\
+        .assert_body("url", "https://httpbin.org/get?abc=123&de=222&xyz=456")\
+        .assert_body("headers.Accept", 'application/json')\
+        .assert_body("args", {"abc": "123", "de": "222", "xyz": "456"})
 
 
 def test_with_raw_assert():
@@ -79,11 +92,11 @@ def test_httpbin_post_data_in_json():
 def test_httpbin_parameters_share():
     user_id = "adk129"
     ApiHttpbinGet()\
-        .set_params(user_id=user_id)\
+        .set_param("user_id", user_id)\
         .run()\
         .assert_status_code(200)\
         .assert_header("server", "nginx")\
-        .assert_body("url", "https://httpbin.org/get?user_id={}".format(user_id))\
+        .assert_body("url", "https://httpbin.org/get?abc=111&de=222&user_id={}".format(user_id))\
         .assert_body("headers.Accept", 'application/json')
 
     ApiHttpBinPost()\

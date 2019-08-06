@@ -1,4 +1,5 @@
 
+import copy
 import json
 
 import requests
@@ -15,21 +16,34 @@ class BaseApi(object):
     headers = None
     cookies = None
     files = None
+    json = None
+
+    # config part
+    verify = None
     auth = None
     timeout = None
-    allow_redirects = True
     proxies = None
+    allow_redirects = True
     hooks = None
     stream = None
-    verify = None
     cert = None
-    json = None
 
     def __init__(self):
         self.resp_obj = None
 
+    def set_param(self, key, value):
+        """ update request param
+        """
+        param = {key: value}
+        return self.set_params(**param)
+
     def set_params(self, **params):
-        self.params = params
+        """ update request params
+        """
+        if not hasattr(self, "_params"):
+            self._params = copy.deepcopy(self.__class__.params or {})
+
+        self._params.update(params)
         return self
 
     def set_header(self, key, value):
@@ -64,7 +78,7 @@ class BaseApi(object):
         _resp_obj = session.request(
             self.method,
             self.url,
-            params=self.params,
+            params=getattr(self, "_params", None) or self.params,
             data=self.data,
             headers=self.headers,
             cookies=self.cookies,

@@ -4,7 +4,10 @@ from pytest_requests.api import BaseApi
 class ApiHttpbinGet(BaseApi):
 
     url = "http://httpbin.org/get"
-    params = {}
+    params = {
+        "abc": "111",
+        "de": "222"
+    }
     method = "GET"
     headers = {"accept": "application/json"}
 
