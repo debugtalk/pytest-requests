@@ -65,6 +65,7 @@ def test_httpbin_post_json():
 
 def test_httpbin_post_form_data():
     ApiHttpBinPost()\
+        .set_header("User-Agent", "pytest-requests")\
         .set_header("content-type", "application/x-www-form-urlencoded; charset=utf-8")\
         .set_data("abc=123")\
         .run()\
@@ -73,12 +74,17 @@ def test_httpbin_post_form_data():
         .assert_body("url", "https://httpbin.org/post")\
         .assert_body("headers.Accept", 'application/json')\
         .assert_body('headers."Content-Type"', "application/x-www-form-urlencoded; charset=utf-8")\
-        .assert_body("form.abc", "123")
+        .assert_body("form.abc", "123")\
+        .assert_body('headers."User-Agent"', "pytest-requests")
 
 
 def test_httpbin_post_data_in_json():
+    headers = {
+        "User-Agent": "pytest-requests",
+        "content-type": "application/json"
+    }
     ApiHttpBinPost()\
-        .set_header("content-type", "application/json")\
+        .set_headers(**headers)\
         .set_data({"abc": "123"})\
         .run()\
         .assert_status_code(200)\
@@ -86,7 +92,8 @@ def test_httpbin_post_data_in_json():
         .assert_body("url", "https://httpbin.org/post")\
         .assert_body("headers.Accept", 'application/json')\
         .assert_body('headers."Content-Type"', "application/json")\
-        .assert_body("json.abc", "123")
+        .assert_body("json.abc", "123")\
+        .assert_body('headers."User-Agent"', "pytest-requests")
 
 
 def test_httpbin_parameters_share():

@@ -47,8 +47,18 @@ class BaseApi(object):
         return self
 
     def set_header(self, key, value):
-        self.headers = self.headers or {}
-        self.headers.update({key: value})
+        """ update request header
+        """
+        header = {key: value}
+        return self.set_headers(**header)
+
+    def set_headers(self, **headers):
+        """ update request headers
+        """
+        if not hasattr(self, "_headers"):
+            self._headers = copy.deepcopy(self.__class__.headers or {})
+
+        self._headers.update(headers)
         return self
 
     def set_cookie(self, key, value):
@@ -70,8 +80,9 @@ class BaseApi(object):
         return self
 
     def run(self, session = None):
-        if isinstance(self.data, dict) and self.headers and\
-            self.headers.get("content-type") == "application/json":
+        self._headers = getattr(self, "_headers", None) or self.headers
+        if isinstance(self.data, dict) and self._headers and\
+            self._headers.get("content-type") == "application/json":
             self.data = json.dumps(self.data)
 
         session = session or requests.sessions.Session()
@@ -80,7 +91,7 @@ class BaseApi(object):
             self.url,
             params=getattr(self, "_params", None) or self.params,
             data=self.data,
-            headers=self.headers,
+            headers=self._headers,
             cookies=self.cookies,
             files=self.files,
             auth=self.auth,
