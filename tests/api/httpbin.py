@@ -42,3 +42,9 @@ class ApiHttpBinGetRedirect302(BaseApi):
         "url": "https://debugtalk.com",
         "status_code": 302
     }
+
+
+class ApiHttpBinGetJson(BaseApi):
+
+    method = EnumMethod.GET
+    url = "https://httpbin.org/json"

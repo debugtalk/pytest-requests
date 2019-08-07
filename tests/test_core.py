@@ -180,3 +180,18 @@ def test_httpbin_redirect_allow_redirects():
         .set_param("status_code", 302)\
         .run()\
         .assert_status_code(302)
+
+
+def test_httpbin_get_json():
+    title = ApiHttpBinGetJson()\
+        .set_config(verify=False)\
+        .set_header("User-Agent", "pytest-requests")\
+        .set_cookie("username", "debugtalk")\
+        .run()\
+        .assert_status_code(200)\
+        .assert_header("content-Type", "application/json")\
+        .assert_body("slideshow.slides[0].title", "Wake up to WonderWidgets!")\
+        .extract("body.slideshow.slides[1].title")
+
+    assert title == "Overview"
+
