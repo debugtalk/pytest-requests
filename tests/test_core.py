@@ -118,13 +118,13 @@ def test_httpbin_parameters_share():
 
 def test_httpbin_extract():
     api_run = ApiHttpbinGet().run()
-    status_code = api_run.extract_response("status_code")
+    status_code = api_run.extract("status_code")
     assert status_code == 200
 
-    server = api_run.extract_response("headers.server")
+    server = api_run.extract("headers.server")
     assert server == "nginx"
 
-    accept_type = api_run.extract_response("body.headers.Accept")
+    accept_type = api_run.extract("body.headers.Accept")
     assert accept_type == 'application/json'
 
 
@@ -134,8 +134,8 @@ def test_httpbin_setcookies():
         "freeform2": "456"
     }
     api_run = ApiHttpBinGetCookies().set_cookies(**cookies).run()
-    freeform1 = api_run.extract_response("body.cookies.freeform1")
-    freeform2 = api_run.extract_response("body.cookies.freeform2")
+    freeform1 = api_run.extract("body.cookies.freeform1")
+    freeform2 = api_run.extract("body.cookies.freeform2")
     assert freeform1 == "123"
     assert freeform2 == "456"
 
@@ -144,7 +144,7 @@ def test_httpbin_parameters_extract():
     freeform = ApiHttpBinGetCookies()\
         .set_cookie("freeform", "123")\
         .run()\
-        .extract_response("body.cookies.freeform")
+        .extract("body.cookies.freeform")
     assert freeform == "123"
 
     # step 2: use value as parameter
@@ -168,7 +168,7 @@ def test_httpbin_login_status():
     # step2: request another api, check cookie
     resp = ApiHttpBinPost()\
         .set_body({"abc": 123})\
-        .run(session).get_response()
+        .run(session).extract()
 
     request_headers = resp.request.headers
     assert "freeform=567" in request_headers["Cookie"]

@@ -134,7 +134,16 @@ class BaseApi(object):
         self.resp_obj = ResponseObject(_resp_obj)
         return self
 
-    def extract_response(self, field):
+    def extract(self, field=None):
+        """ extract response field
+
+        Args:
+            field (str): response field, if not set, return response object
+                e.g. status_code, headers.server, body.cookies.freeform
+        """
+        if not field:
+            return self.resp_obj
+
         return self.resp_obj.extract(field)
 
     def __assert_with_expected(self, actual_value, expected_value):
@@ -184,6 +193,3 @@ class BaseApi(object):
             self.resp_obj.extract_body(field),
             expected_value
         )
-
-    def get_response(self):
-        return self.resp_obj
