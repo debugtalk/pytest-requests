@@ -39,7 +39,7 @@ def test_httpbin_get_with_multiple_set_params():
 
 def test_with_raw_assert():
     ApiHttpBinPost()\
-        .set_json({"abc": 456})\
+        .set_body({"abc": 456})\
         .run()\
         .assert_("status_code", 200)\
         .assert_("headers.server", "nginx")\
@@ -52,7 +52,7 @@ def test_with_raw_assert():
 
 def test_httpbin_post_json():
     ApiHttpBinPost()\
-        .set_json({"abc": 456})\
+        .set_body({"abc": 456})\
         .run()\
         .assert_status_code(200)\
         .assert_header("server", "nginx")\
@@ -67,7 +67,7 @@ def test_httpbin_post_form_data():
     ApiHttpBinPost()\
         .set_header("User-Agent", "pytest-requests")\
         .set_header("content-type", "application/x-www-form-urlencoded; charset=utf-8")\
-        .set_data("abc=123")\
+        .set_body("abc=123")\
         .run()\
         .assert_status_code(200)\
         .assert_header("server", "nginx")\
@@ -85,7 +85,7 @@ def test_httpbin_post_data_in_json():
     }
     ApiHttpBinPost()\
         .set_headers(**headers)\
-        .set_data({"abc": "123"})\
+        .set_body({"abc": "123"})\
         .run()\
         .assert_status_code(200)\
         .assert_header("server", "nginx")\
@@ -107,7 +107,7 @@ def test_httpbin_parameters_share():
         .assert_body("headers.Accept", 'application/json')
 
     ApiHttpBinPost()\
-        .set_json({"user_id": user_id})\
+        .set_body({"user_id": user_id})\
         .run()\
         .assert_status_code(200)\
         .assert_header("server", "nginx")\
@@ -149,7 +149,7 @@ def test_httpbin_parameters_extract():
 
     # step 2: use value as parameter
     ApiHttpBinPost()\
-        .set_json({"freeform": freeform})\
+        .set_body({"freeform": freeform})\
         .run()\
         .assert_status_code(200)\
         .assert_header("server", "nginx")\
@@ -167,7 +167,7 @@ def test_httpbin_login_status():
 
     # step2: request another api, check cookie
     resp = ApiHttpBinPost()\
-        .set_json({"abc": 123})\
+        .set_body({"abc": 123})\
         .run(session).get_response()
 
     request_headers = resp.request.headers

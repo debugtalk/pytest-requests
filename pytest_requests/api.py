@@ -12,11 +12,9 @@ class BaseApi(object):
     method = "GET"
     url = ""
     params = None
-    data = None
     headers = None
     cookies = None
-    files = None
-    json = None
+    body = None
 
     # config part
     verify = None
@@ -76,38 +74,36 @@ class BaseApi(object):
         self._cookies.update(kwargs)
         return self
 
-    def set_data(self, data):
-        self.data = data
-        return self
-
-    def set_json(self, json_data):
-        self.json = json_data
+    def set_body(self, body):
+        """ set request body
+        """
+        self.body = body
         return self
 
     def run(self, session = None):
-        self._headers = getattr(self, "_headers", None) or self.headers
-        if isinstance(self.data, dict) and self._headers and\
-            self._headers.get("content-type") == "application/json":
-            self.data = json.dumps(self.data)
 
         session = session or requests.sessions.Session()
+        self._headers = getattr(self, "_headers", None) or self.headers
+
+        kwargs = {
+            "params": getattr(self, "_params", None) or self.params,
+            "headers": self._headers,
+            "cookies": getattr(self, "_cookies", None) or self.cookies
+        }
+
+        if isinstance(self.body, dict):
+            if self._headers and \
+                self._headers.get("content-type", "").startswith("application/x-www-form-urlencoded"):
+                kwargs["data"] = json.dumps(self.body)
+            else:
+                kwargs["json"] = self.body
+        else:
+            kwargs["data"] = self.body
+
         _resp_obj = session.request(
             self.method,
             self.url,
-            params=getattr(self, "_params", None) or self.params,
-            data=self.data,
-            headers=self._headers,
-            cookies=getattr(self, "_cookies", None) or self.cookies,
-            files=self.files,
-            auth=self.auth,
-            timeout=self.timeout,
-            allow_redirects=self.allow_redirects,
-            proxies=self.proxies,
-            hooks=self.hooks,
-            stream=self.stream,
-            verify=self.verify,
-            cert=self.cert,
-            json=self.json
+            **kwargs
         )
         self.resp_obj = ResponseObject(_resp_obj)
         return self

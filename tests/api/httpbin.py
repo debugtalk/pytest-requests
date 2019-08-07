@@ -17,7 +17,7 @@ class ApiHttpBinPost(BaseApi):
     url = "http://httpbin.org/post"
     method = "POST"
     headers = {"accept": "application/json"}
-    json = {"abc": 123}
+    body = {"abc": 123}
 
 
 class ApiHttpBinGetCookies(BaseApi):
