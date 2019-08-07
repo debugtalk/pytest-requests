@@ -7,6 +7,13 @@ import requests
 from pytest_requests.response import ResponseObject
 
 
+class EnumMethod(object):
+    ''' Enum HTTP method
+    '''
+    GET, HEAD, POST, PUT, OPTIONS, DELETE \
+        = ("GET", "HEAD", "POST", "PUT", "OPTIONS", "DELETE")
+
+
 class BaseApi(object):
 
     method = "GET"

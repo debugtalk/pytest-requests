@@ -1,34 +1,34 @@
-from pytest_requests.api import BaseApi
+from pytest_requests.api import BaseApi, EnumMethod
 
 
 class ApiHttpbinGet(BaseApi):
 
+    method = EnumMethod.GET
     url = "http://httpbin.org/get"
     params = {
         "abc": "111",
         "de": "222"
     }
-    method = "GET"
     headers = {"accept": "application/json"}
 
 
 class ApiHttpBinPost(BaseApi):
 
+    method = EnumMethod.POST
     url = "http://httpbin.org/post"
-    method = "POST"
     headers = {"accept": "application/json"}
     body = {"abc": 123}
 
 
 class ApiHttpBinGetCookies(BaseApi):
 
+    method = EnumMethod.GET
     url = "http://httpbin.org/cookies"
-    method = "GET"
     headers = {"accept": "application/json"}
 
 
 class ApiHttpBinGetSetCookies(BaseApi):
 
+    method = EnumMethod.GET
     url = "http://httpbin.org/cookies/set"
-    method = "GET"
     headers = {"accept": "text/plain"}
