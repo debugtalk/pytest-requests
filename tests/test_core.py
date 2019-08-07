@@ -195,3 +195,26 @@ def test_httpbin_get_json():
 
     assert title == "Overview"
 
+
+def test_httpbin_update_post_body():
+    ApiHttpBinPostHtmlForm()\
+        .set_header("User-Agent", "pytest-requests")\
+        .update_body(custname="leo", custtel="18699999999")\
+        .run()\
+        .assert_status_code(200)\
+        .assert_header("Content-Type", "application/json")\
+        .assert_body("form.comments", "hello world")\
+        .assert_body("form.topping[0]", "cheese")\
+        .assert_body("form.custname", "leo")\
+        .assert_body("form.custtel", "18699999999")
+
+    ApiHttpBinPostJson()\
+        .set_header("User-Agent", "pytest-requests")\
+        .update_body(custname="leo", custtel="18699999999")\
+        .run()\
+        .assert_status_code(200)\
+        .assert_header("Content-Type", "application/json")\
+        .assert_body("json.comments", "hello world")\
+        .assert_body("json.topping[0]", "cheese")\
+        .assert_body("json.custname", "leo")\
+        .assert_body("json.custtel", "18699999999")

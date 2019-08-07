@@ -5,6 +5,7 @@ import json
 import requests
 
 from pytest_requests.response import ResponseObject
+from pytest_requests.utils import parse_content
 
 
 class EnumMethod(object):
@@ -101,7 +102,13 @@ class BaseApi(object):
     def set_body(self, body):
         """ set request body
         """
-        self.body = body
+        self._body = body
+        return self
+
+    def update_body(self, **kwargs):
+        """
+        """
+        self._body = parse_content(self.body, kwargs)
         return self
 
     def run(self, session = None):
@@ -117,14 +124,15 @@ class BaseApi(object):
         if hasattr(self, "_config"):
             kwargs.update(self._config)
 
-        if isinstance(self.body, dict):
+        _body = self._body if hasattr(self, "_body") else self.body
+        if isinstance(_body, dict):
             if self._headers and \
                 self._headers.get("content-type", "").startswith("application/x-www-form-urlencoded"):
-                kwargs["data"] = json.dumps(self.body)
+                kwargs["data"] = json.dumps(_body)
             else:
-                kwargs["json"] = self.body
+                kwargs["json"] = _body
         else:
-            kwargs["data"] = self.body
+            kwargs["data"] = _body
 
         _resp_obj = session.request(
             self.method,
