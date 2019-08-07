@@ -23,18 +23,35 @@ class BaseApi(object):
     cookies = None
     body = None
 
-    # config part
-    verify = None
-    auth = None
-    timeout = None
-    proxies = None
-    allow_redirects = True
-    hooks = None
-    stream = None
-    cert = None
-
     def __init__(self):
         self.resp_obj = None
+
+    def set_config(self, verify=None, auth=None, timeout=None, proxies=None,
+            allow_redirects=True, hooks=None, stream=None, cert=None):
+        """ set request configuration
+
+        Args:
+            verify
+            auth
+            timeout
+            proxies
+            allow_redirects
+            hooks
+            stream
+            cert
+
+        """
+        self._config = {
+            "verify": verify,
+            "auth": auth,
+            "timeout": timeout,
+            "proxies": proxies,
+            "allow_redirects": allow_redirects,
+            "hooks": hooks,
+            "stream": stream,
+            "cert": cert
+        }
+        return self
 
     def set_param(self, key, value):
         """ update request param
@@ -97,6 +114,8 @@ class BaseApi(object):
             "headers": self._headers,
             "cookies": getattr(self, "_cookies", None) or self.cookies
         }
+        if hasattr(self, "_config"):
+            kwargs.update(self._config)
 
         if isinstance(self.body, dict):
             if self._headers and \

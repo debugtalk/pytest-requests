@@ -32,3 +32,13 @@ class ApiHttpBinGetSetCookies(BaseApi):
     method = EnumMethod.GET
     url = "http://httpbin.org/cookies/set"
     headers = {"accept": "text/plain"}
+
+
+class ApiHttpBinGetRedirect302(BaseApi):
+
+    method = EnumMethod.GET
+    url = "http://httpbin.org/redirect-to"
+    params = {
+        "url": "https://debugtalk.com",
+        "status_code": 302
+    }

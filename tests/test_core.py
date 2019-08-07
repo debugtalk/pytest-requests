@@ -172,3 +172,11 @@ def test_httpbin_login_status():
 
     request_headers = resp.request.headers
     assert "freeform=567" in request_headers["Cookie"]
+
+
+def test_httpbin_redirect_allow_redirects():
+    ApiHttpBinGetRedirect302()\
+        .set_config(allow_redirects=False)\
+        .set_param("status_code", 302)\
+        .run()\
+        .assert_status_code(302)
