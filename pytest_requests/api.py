@@ -24,6 +24,9 @@ class BaseApi(object):
     cookies = None
     body = None
 
+    def __init__(self, session=None):
+        self.__session = session or requests.sessions.Session()
+
     def set_config(self, verify=None, auth=None, timeout=None, proxies=None,
             allow_redirects=True, hooks=None, stream=None, cert=None):
         """ set request configuration
@@ -126,10 +129,9 @@ class BaseApi(object):
         except AttributeError:
             return getattr(self, attr_name)
 
-    def run(self, session=None):
-        """ make HTTP request with session
+    def run(self):
+        """ make HTTP(S) request
         """
-        session = session or requests.sessions.Session()
         self.__headers = self.__get_private_attribute("headers")
 
         kwargs = {
@@ -157,7 +159,7 @@ class BaseApi(object):
         else:
             kwargs["data"] = resp_body
 
-        _resp_obj = session.request(
+        _resp_obj = self.__session.request(
             self.method,
             self.url,
             **kwargs

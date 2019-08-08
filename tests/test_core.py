@@ -1,4 +1,6 @@
 from tests.api.httpbin import *
+from tests.testcases.httpbin import *
+
 
 def test_version():
     from pytest_requests import __version__
@@ -163,12 +165,12 @@ def test_httpbin_login_status():
     session = requests.sessions.Session()
 
     # step1: login and get cookie
-    ApiHttpBinGetSetCookies().set_params(freeform="567").run(session)
+    ApiHttpBinGetSetCookies(session).set_params(freeform="567").run()
 
     # step2: request another api, check cookie
-    resp = ApiHttpBinPost()\
+    resp = ApiHttpBinPost(session)\
         .set_body({"abc": 123})\
-        .run(session).get_response_object()
+        .run().get_response_object()
 
     request_headers = resp.request.headers
     assert "freeform=567" in request_headers["Cookie"]
@@ -218,3 +220,8 @@ def test_httpbin_update_post_body():
         .assert_body("json.topping[0]", "cheese")\
         .assert_body("json.custname", "leo")\
         .assert_body("json.custtel", "18699999999")
+
+
+def test_testcase_demo():
+    TestUpdatePostBody().run_test()
+    TestLoginStatus().run_test()
