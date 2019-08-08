@@ -142,17 +142,30 @@ class BaseApi(object):
         self.resp_obj = ResponseObject(_resp_obj)
         return self
 
-    def extract(self, field=None):
+    def extract_header(self, field):
+        """ extract response header field.
+        """
+        return self.resp_obj.extract_header(field)
+
+    def extract_body(self, field):
+        """ extract response body field, field supports jmespath
+        """
+        return self.resp_obj.extract_body(field)
+
+    def extract_(self, field):
         """ extract response field
 
         Args:
-            field (str): response field, if not set, return response object
+            field (str): response field
                 e.g. status_code, headers.server, body.cookies.freeform
-        """
-        if not field:
-            return self.resp_obj
 
+        """
         return self.resp_obj.extract(field)
+
+    def get_response_object(self):
+        """ get response object.
+        """
+        return self.resp_obj
 
     def __assert_with_expected(self, actual_value, expected_value):
         assert actual_value == expected_value
@@ -190,7 +203,7 @@ class BaseApi(object):
         )
 
     def assert_body(self, field, expected_value):
-        """ assert body filed equivalent to expected value
+        """ assert body filed equivalent to expected value, field supports jmespath
 
         Params:
             field (str): jmespath string
