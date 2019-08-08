@@ -1,5 +1,5 @@
 from pytest_requests.testcase import BaseTestcase
-from tests.api.httpbin import *
+from tests.httpbin.api import *
 
 
 class TestUpdatePostBody(BaseTestcase):
