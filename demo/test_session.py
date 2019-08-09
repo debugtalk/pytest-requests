@@ -1,5 +1,7 @@
-from pytest_requests.testcase import TestCase
-from tests.httpbin.api import *
+from pytest_requests import TestCase
+from demo.api.html_form import *
+from demo.api.cookies import *
+from demo.api.http_methods import *
 
 
 class TestUpdatePostBody(TestCase):
@@ -54,3 +56,17 @@ class TestLoginStatus(TestCase):
 
         request_headers = resp.request.headers
         assert "freeform=567" in request_headers["Cookie"]
+
+
+class TestCookies(TestCase):
+
+    def test_httpbin_setcookies(self):
+        cookies = {
+            "freeform1": "123",
+            "freeform2": "456"
+        }
+        api_run = ApiHttpBinGetCookies().set_cookies(cookies).run()
+        freeform1 = api_run.get_body("cookies.freeform1")
+        freeform2 = api_run.get_body("cookies.freeform2")
+        assert freeform1 == "123"
+        assert freeform2 == "456"

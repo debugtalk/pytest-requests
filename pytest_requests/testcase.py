@@ -1,5 +1,7 @@
 import requests
 
+from pytest_requests.utils import parse_content
+
 
 class TestCase(object):
 
@@ -10,25 +12,7 @@ class TestCase(object):
 
     @staticmethod
     def parse_body(content, kwargs):
-
-        if isinstance(content, dict):
-            return {
-                key: TestCase.parse_body(value, kwargs)
-                for key, value in content.items()
-            }
-
-        elif isinstance(content, list):
-            return [
-                TestCase.parse_body(item, kwargs)
-                for item in content
-            ]
-
-        elif isinstance(content, str):
-            return content.format(**kwargs)
-
-        else:
-            return content
-
+        return parse_content(content, kwargs)
 
     def run_test(self):
         """ run_test should be overrided.
