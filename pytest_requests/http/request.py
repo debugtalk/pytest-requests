@@ -4,6 +4,8 @@ from typing import Any, Tuple
 
 import requests
 
+from pytest_requests.exceptions import ParamsError
+
 from .response import HttpResponse, ResponseObject
 
 
@@ -16,19 +18,12 @@ class EnumHttpMethod(object):
 
 class HttpRequest(object):
 
-    method = "GET"
-    url = None
-    params = None
-    headers = None
-    cookies = None
-    body = None
-
     def __init__(self, session=None):
         self.__session = session or requests.sessions.Session()
         self.__kwargs = {
-            "params": copy.deepcopy(self.__class__.params or {}),
-            "headers": copy.deepcopy(self.__class__.headers or {}),
-            "cookies": copy.deepcopy(self.__class__.cookies or {})
+            "params": copy.deepcopy(getattr(self, "params", {})),
+            "headers": copy.deepcopy(getattr(self, "headers", {})),
+            "cookies": copy.deepcopy(getattr(self, "cookies", {}))
         }
 
     def config_verify(self, is_verify: bool) -> "HttpRequest":
@@ -91,7 +86,7 @@ class HttpRequest(object):
         try:
             resp_body = self.__body
         except AttributeError:
-            resp_body = self.body
+            resp_body = getattr(self, "body", None)
 
         if isinstance(resp_body, dict):
             if self.__kwargs["headers"] and \
@@ -103,9 +98,15 @@ class HttpRequest(object):
         else:
             self.__kwargs["data"] = resp_body
 
+        method = getattr(self, "method", "GET")
+        try:
+            url = getattr(self, "url")
+        except AttributeError:
+            raise ParamsError("url missing!")
+
         _resp_obj = self.__session.request(
-            self.method,
-            self.url,
+            method,
+            url,
             **self.__kwargs
         )
         resp_obj = ResponseObject(_resp_obj)
