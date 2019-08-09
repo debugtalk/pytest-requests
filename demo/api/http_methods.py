@@ -1,9 +1,9 @@
-from pytest_requests.api import HttpRequest, EnumMethod
+from pytest_requests.api import HttpRequest, EnumHttpMethod
 
 
 class ApiHttpbinGet(HttpRequest):
 
-    method = EnumMethod.GET
+    method = EnumHttpMethod.GET
     url = "http://httpbin.org/get"
     params = {
         "abc": "111",
@@ -14,7 +14,7 @@ class ApiHttpbinGet(HttpRequest):
 
 class ApiHttpBinPost(HttpRequest):
 
-    method = EnumMethod.POST
+    method = EnumHttpMethod.POST
     url = "http://httpbin.org/post"
     headers = {
         "Content-Type": "application/json",

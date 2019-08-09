@@ -1,9 +1,9 @@
-from pytest_requests.api import HttpRequest, EnumMethod
+from pytest_requests.api import HttpRequest, EnumHttpMethod
 
 
 class ApiHttpBinGetRedirect302(HttpRequest):
 
-    method = EnumMethod.GET
+    method = EnumHttpMethod.GET
     url = "http://httpbin.org/redirect-to"
     params = {
         "url": "https://debugtalk.com",
