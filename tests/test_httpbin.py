@@ -138,7 +138,7 @@ def test_httpbin_setcookies():
         "freeform1": "123",
         "freeform2": "456"
     }
-    api_run = ApiHttpBinGetCookies().set_cookies(**cookies).run()
+    api_run = ApiHttpBinGetCookies().set_cookies(cookies).run()
     freeform1 = api_run.extract_body("cookies.freeform1")
     freeform2 = api_run.extract_body("cookies.freeform2")
     assert freeform1 == "123"
@@ -147,7 +147,7 @@ def test_httpbin_setcookies():
 def test_httpbin_parameters_extract():
     # step 1: get value
     freeform = ApiHttpBinGetCookies()\
-        .set_cookie("freeform", "123")\
+        .set_cookies({"freeform": "123"})\
         .run()\
         .extract_body("cookies.freeform")
     assert freeform == "123"
@@ -191,7 +191,7 @@ def test_httpbin_get_json():
     title = ApiHttpBinGetJson()\
         .set_config(verify=False)\
         .set_headers({"User-Agent": "pytest-requests"})\
-        .set_cookie("username", "debugtalk")\
+        .set_cookies({"username": "debugtalk"})\
         .run()\
         .assert_status_code(200)\
         .assert_header("content-Type", "application/json")\

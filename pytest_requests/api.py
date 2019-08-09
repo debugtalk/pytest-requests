@@ -82,20 +82,14 @@ class BaseApi(object):
 
         return self
 
-    def set_cookie(self, key, value):
-        """ update request cookie
-        """
-        cookie = {key: value}
-        return self.set_cookies(**cookie)
-
-    def set_cookies(self, **kwargs):
+    def set_cookies(self, cookies_dict):
         """ update request cookies
         """
         try:
-            self.__cookies.update(kwargs)
+            self.__cookies.update(cookies_dict)
         except AttributeError:
             self.__cookies = copy.deepcopy(self.__class__.cookies or {})
-            self.__cookies.update(kwargs)
+            self.__cookies.update(cookies_dict)
 
         return self
 
