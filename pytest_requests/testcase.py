@@ -1,10 +1,12 @@
 import requests
 
 
-class BaseTestcase(object):
+class TestCase(object):
 
-    def __init__(self):
-        self.session = requests.sessions.Session()
+    def create_session(self):
+        """ create new HTTP session
+        """
+        return requests.sessions.Session()
 
     def run_test(self):
         """ run_test should be overrided.

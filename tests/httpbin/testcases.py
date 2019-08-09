@@ -1,11 +1,13 @@
-from pytest_requests.testcase import BaseTestcase
+from pytest_requests.testcase import TestCase
 from tests.httpbin.api import *
 
 
-class TestUpdatePostBody(BaseTestcase):
+class TestUpdatePostBody(TestCase):
 
     def run_test(self):
-        ApiHttpBinPostHtmlForm(self.session)\
+        session = self.create_session()
+
+        ApiHttpBinPostHtmlForm(session)\
             .set_headers({"User-Agent": "pytest-requests"})\
             .update_body(custname="leo", custtel="18699999999")\
             .run()\
@@ -16,7 +18,7 @@ class TestUpdatePostBody(BaseTestcase):
             .assert_body("form.custname", "leo")\
             .assert_body("form.custtel", "18699999999")
 
-        ApiHttpBinPostJson(self.session)\
+        ApiHttpBinPostJson(session)\
             .set_headers({"User-Agent": "pytest-requests"})\
             .update_body(custname="leo", custtel="18699999999")\
             .run()\
@@ -28,16 +30,18 @@ class TestUpdatePostBody(BaseTestcase):
             .assert_body("json.custtel", "18699999999")
 
 
-class TestLoginStatus(BaseTestcase):
+class TestLoginStatus(TestCase):
 
     def run_test(self):
+        session = self.create_session()
+
         # step1: login and get cookie
-        ApiHttpBinGetSetCookies(self.session)\
+        ApiHttpBinGetSetCookies(session)\
             .set_params({"freeform": "567"})\
             .run()
 
         # step2: request another api, check cookie
-        resp = ApiHttpBinPost(self.session)\
+        resp = ApiHttpBinPost(session)\
             .set_body({"abc": 123})\
             .run()\
             .get_response_object()
