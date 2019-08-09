@@ -1,6 +1,7 @@
 
 import copy
 import json
+from typing import Any
 
 import requests
 
@@ -54,40 +55,40 @@ class HttpRequest(object):
         }
         return self
 
-    def set_querystring(self, params_dict: dict):
+    def set_querystring(self, params: dict) -> "HttpRequest":
         """ update request query params
         """
         try:
-            self.__params.update(params_dict)
+            self.__params.update(params)
         except AttributeError:
             self.__params = copy.deepcopy(self.__class__.params or {})
-            self.__params.update(params_dict)
+            self.__params.update(params)
 
         return self
 
-    def set_headers(self, headers_dict):
+    def set_headers(self, headers: dict) -> "HttpRequest":
         """ update request headers
         """
         try:
-            self.__headers.update(headers_dict)
+            self.__headers.update(headers)
         except AttributeError:
             self.__headers = copy.deepcopy(self.__class__.headers or {})
-            self.__headers.update(headers_dict)
+            self.__headers.update(headers)
 
         return self
 
-    def set_cookies(self, cookies_dict):
+    def set_cookies(self, cookies: dict) -> "HttpRequest":
         """ update request cookies
         """
         try:
-            self.__cookies.update(cookies_dict)
+            self.__cookies.update(cookies)
         except AttributeError:
             self.__cookies = copy.deepcopy(self.__class__.cookies or {})
-            self.__cookies.update(cookies_dict)
+            self.__cookies.update(cookies)
 
         return self
 
-    def set_body(self, body):
+    def set_body(self, body: Any) -> "HttpRequest":
         """ set request body
         """
         self.__body = body
@@ -111,7 +112,7 @@ class HttpRequest(object):
         except AttributeError:
             return getattr(self, attr_name)
 
-    def run(self):
+    def run(self) -> "HttpResponse":
         """ make HTTP(S) request
         """
         self.__headers = self.__get_private_attribute("headers")
@@ -152,20 +153,20 @@ class HttpRequest(object):
 
 class HttpResponse(object):
 
-    def __init__(self, resp_obj):
+    def __init__(self, resp_obj: "requests.Response"):
         self.__resp_obj = resp_obj
 
-    def extract_header(self, field):
+    def extract_header(self, field: str):
         """ extract response header field.
         """
         return self.__resp_obj.extract_header(field)
 
-    def extract_body(self, field):
+    def extract_body(self, field: str):
         """ extract response body field, field supports jmespath
         """
         return self.__resp_obj.extract_body(field)
 
-    def extract_(self, field):
+    def extract_(self, field: str):
         """ extract response field
 
         Args:
@@ -175,7 +176,7 @@ class HttpResponse(object):
         """
         return self.__resp_obj.extract(field)
 
-    def get_response_object(self):
+    def get_response_object(self) -> "requests.Response":
         """ get response object.
         """
         return self.__resp_obj
@@ -184,7 +185,7 @@ class HttpResponse(object):
         assert actual_value == expected_value
         return self
 
-    def assert_(self, field, expected_value):
+    def assert_(self, field: str, expected_value: Any) -> "HttpResponse":
         """ universal assertion with expected value
 
         Params:
@@ -199,10 +200,10 @@ class HttpResponse(object):
             expected_value
         )
 
-    def assert_status_code(self, expected_value):
+    def assert_status_code(self, expected_value: int) -> "HttpResponse":
         return self.assert_("status_code", expected_value)
 
-    def assert_header(self, field, expected_value):
+    def assert_header(self, field: str, expected_value: Any) -> "HttpResponse":
         """ assert header filed equivalent to expected value
 
         Params:
@@ -215,7 +216,7 @@ class HttpResponse(object):
             expected_value
         )
 
-    def assert_body(self, field, expected_value):
+    def assert_body(self, field: str, expected_value: Any) -> "HttpResponse":
         """ assert body filed equivalent to expected value, field supports jmespath
 
         Params:
