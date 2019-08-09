@@ -1,7 +1,7 @@
 
 import copy
 import json
-from typing import Any
+from typing import Any, Tuple
 
 import requests
 
@@ -33,32 +33,34 @@ class HttpRequest(object):
             "cookies": copy.deepcopy(self.__class__.cookies or {})
         }
 
-    def set_config(self, verify=None, auth=None, timeout=None, proxies=None,
-            allow_redirects=True, hooks=None, stream=None, cert=None):
-        """ set request configuration
-
-        Args:
-            verify
-            auth
-            timeout
-            proxies
-            allow_redirects
-            hooks
-            stream
-            cert
-
+    def config_verify(self, is_verify: bool) -> "HttpRequest":
+        """ config whether to verify the server’s TLS certificate
         """
-        config_kwargs = {
-            "verify": verify,
-            "auth": auth,
-            "timeout": timeout,
-            "proxies": proxies,
-            "allow_redirects": allow_redirects,
-            "hooks": hooks,
-            "stream": stream,
-            "cert": cert
-        }
-        self.__kwargs.update(config_kwargs)
+        self.__kwargs["verify"] = is_verify
+        return self
+
+    def config_timeout(self, timeout: float) -> "HttpRequest":
+        """ config how many seconds to wait for the server to send data before giving up
+        """
+        self.__kwargs["timeout"] = timeout
+        return self
+
+    def config_proxies(self, proxies: dict) -> "HttpRequest":
+        """ config dictionary mapping protocol to the URL of the proxy.
+        """
+        self.__kwargs["proxies"] = proxies
+        return self
+
+    def config_allow_redirects(self, is_allow_redirects: bool) -> "HttpRequest":
+        """ config whether to enable GET/OPTIONS/POST/PUT/PATCH/DELETE/HEAD redirection.
+        """
+        self.__kwargs["allow_redirects"] = is_allow_redirects
+        return self
+
+    def config_auth(self, auth: Tuple[str, str]) -> "HttpRequest":
+        """ config Basic/Digest/Custom HTTP Auth, (username, password).
+        """
+        self.__kwargs["auth"] = auth
         return self
 
     def set_querystring(self, params: dict) -> "HttpRequest":

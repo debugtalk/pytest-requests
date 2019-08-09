@@ -180,7 +180,7 @@ def test_httpbin_login_status():
 
 def test_httpbin_redirect_allow_redirects():
     ApiHttpBinGetRedirect302()\
-        .set_config(allow_redirects=False)\
+        .config_allow_redirects(False)\
         .set_querystring({"status_code": 302})\
         .run()\
         .assert_status_code(302)
@@ -188,7 +188,7 @@ def test_httpbin_redirect_allow_redirects():
 
 def test_httpbin_get_json():
     title = ApiHttpBinGetJson()\
-        .set_config(verify=False)\
+        .config_verify(False)\
         .set_headers({"User-Agent": "pytest-requests"})\
         .set_cookies({"username": "debugtalk"})\
         .run()\
