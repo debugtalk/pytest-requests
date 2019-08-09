@@ -1,7 +1,88 @@
+from typing import Any
+
 import jmespath
 import requests
 
 from pytest_requests import exceptions
+
+
+class HttpResponse(object):
+
+    def __init__(self, resp_obj: "requests.Response"):
+        self.__resp_obj = resp_obj
+
+    def get_header(self, field: str):
+        """ extract response header field.
+        """
+        return self.__resp_obj.get_header(field)
+
+    def get_body(self, field: str):
+        """ extract response body field, field supports jmespath
+        """
+        return self.__resp_obj.get_body(field)
+
+    def get_(self, field: str):
+        """ extract response field
+
+        Args:
+            field (str): response field
+                e.g. status_code, headers.server, body.cookies.freeform
+
+        """
+        return self.__resp_obj.extract(field)
+
+    def get_response_object(self) -> "requests.Response":
+        """ get response object.
+        """
+        return self.__resp_obj
+
+    def __assert_with_expected(self, actual_value, expected_value):
+        assert actual_value == expected_value
+        return self
+
+    def assert_(self, field: str, expected_value: Any) -> "HttpResponse":
+        """ universal assertion with expected value
+
+        Params:
+            field (str): any field in response
+                status_code
+                headers.Content-Type
+                body.details[0].name
+
+        """
+        return self.__assert_with_expected(
+            self.__resp_obj.extract(field),
+            expected_value
+        )
+
+    def assert_status_code(self, expected_value: int) -> "HttpResponse":
+        return self.assert_("status_code", expected_value)
+
+    def assert_header(self, field: str, expected_value: Any) -> "HttpResponse":
+        """ assert header filed equivalent to expected value
+
+        Params:
+            field (str): case insensitive string, content-type or Content-Type are both okay.
+            expected_value: expected value in any type
+
+        """
+        return self.__assert_with_expected(
+            self.__resp_obj.get_header(field),
+            expected_value
+        )
+
+    def assert_body(self, field: str, expected_value: Any) -> "HttpResponse":
+        """ assert body filed equivalent to expected value, field supports jmespath
+
+        Params:
+            field (str): jmespath string
+            expected_value: expected value in any type
+
+        """
+        return self.__assert_with_expected(
+            self.__resp_obj.get_body(field),
+            expected_value
+        )
 
 
 class ResponseObject(object):

@@ -1,4 +1,4 @@
-from pytest_requests.api import HttpRequest, EnumHttpMethod
+from pytest_requests import HttpRequest, EnumHttpMethod
 
 
 class ApiHttpBinGetCookies(HttpRequest):
