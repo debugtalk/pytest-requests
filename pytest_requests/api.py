@@ -6,7 +6,6 @@ from typing import Any, Tuple
 import requests
 
 from pytest_requests.response import ResponseObject
-from pytest_requests.utils import parse_content
 
 
 class EnumMethod(object):
@@ -85,12 +84,6 @@ class HttpRequest(object):
         """ set request body
         """
         self.__body = body
-        return self
-
-    def update_body(self, **kwargs):
-        """
-        """
-        self.__body = parse_content(self.body, kwargs)
         return self
 
     def run(self) -> "HttpResponse":

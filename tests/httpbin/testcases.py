@@ -7,9 +7,14 @@ class TestUpdatePostBody(TestCase):
     def run_test(self):
         session = self.create_session()
 
+        kwargs = {
+            "custname": "leo",
+            "custtel": "18699999999"
+        }
+        form_data_body = self.parse_body(ApiHttpBinPostHtmlForm.body, kwargs)
         ApiHttpBinPostHtmlForm(session)\
             .set_headers({"User-Agent": "pytest-requests"})\
-            .update_body(custname="leo", custtel="18699999999")\
+            .set_body(form_data_body)\
             .run()\
             .assert_status_code(200)\
             .assert_header("Content-Type", "application/json")\
@@ -18,9 +23,10 @@ class TestUpdatePostBody(TestCase):
             .assert_body("form.custname", "leo")\
             .assert_body("form.custtel", "18699999999")
 
+        json_body = self.parse_body(ApiHttpBinPostJson.body, kwargs)
         ApiHttpBinPostJson(session)\
             .set_headers({"User-Agent": "pytest-requests"})\
-            .update_body(custname="leo", custtel="18699999999")\
+            .set_body(json_body)\
             .run()\
             .assert_status_code(200)\
             .assert_header("Content-Type", "application/json")\

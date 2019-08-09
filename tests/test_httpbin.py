@@ -1,3 +1,4 @@
+from pytest_requests.testcase import TestCase
 from tests.httpbin.api import *
 from tests.httpbin.testcases import *
 
@@ -201,9 +202,14 @@ def test_httpbin_get_json():
 
 
 def test_httpbin_update_post_body():
+    kwargs = {
+        "custname": "leo",
+        "custtel": "18699999999"
+    }
+    form_data_body = TestCase.parse_body(ApiHttpBinPostHtmlForm.body, kwargs)
     ApiHttpBinPostHtmlForm()\
         .set_headers({"User-Agent": "pytest-requests"})\
-        .update_body(custname="leo", custtel="18699999999")\
+        .set_body(form_data_body)\
         .run()\
         .assert_status_code(200)\
         .assert_header("Content-Type", "application/json")\
@@ -212,9 +218,10 @@ def test_httpbin_update_post_body():
         .assert_body("form.custname", "leo")\
         .assert_body("form.custtel", "18699999999")
 
+    json_body = TestCase.parse_body(ApiHttpBinPostJson.body, kwargs)
     ApiHttpBinPostJson()\
         .set_headers({"User-Agent": "pytest-requests"})\
-        .update_body(custname="leo", custtel="18699999999")\
+        .set_body(json_body)\
         .run()\
         .assert_status_code(200)\
         .assert_header("Content-Type", "application/json")\
