@@ -19,7 +19,7 @@ class EnumMethod(object):
 class HttpRequest(object):
 
     method = "GET"
-    url = ""
+    url = None
     params = None
     headers = None
     cookies = None
@@ -27,6 +27,11 @@ class HttpRequest(object):
 
     def __init__(self, session=None):
         self.__session = session or requests.sessions.Session()
+        self.__kwargs = {
+            "params": copy.deepcopy(self.__class__.params or {}),
+            "headers": copy.deepcopy(self.__class__.headers or {}),
+            "cookies": copy.deepcopy(self.__class__.cookies or {})
+        }
 
     def set_config(self, verify=None, auth=None, timeout=None, proxies=None,
             allow_redirects=True, hooks=None, stream=None, cert=None):
@@ -43,7 +48,7 @@ class HttpRequest(object):
             cert
 
         """
-        self.__config = {
+        config_kwargs = {
             "verify": verify,
             "auth": auth,
             "timeout": timeout,
@@ -53,39 +58,25 @@ class HttpRequest(object):
             "stream": stream,
             "cert": cert
         }
+        self.__kwargs.update(config_kwargs)
         return self
 
     def set_querystring(self, params: dict) -> "HttpRequest":
         """ update request query params
         """
-        try:
-            self.__params.update(params)
-        except AttributeError:
-            self.__params = copy.deepcopy(self.__class__.params or {})
-            self.__params.update(params)
-
+        self.__kwargs["params"].update(params)
         return self
 
     def set_headers(self, headers: dict) -> "HttpRequest":
         """ update request headers
         """
-        try:
-            self.__headers.update(headers)
-        except AttributeError:
-            self.__headers = copy.deepcopy(self.__class__.headers or {})
-            self.__headers.update(headers)
-
+        self.__kwargs["headers"].update(headers)
         return self
 
     def set_cookies(self, cookies: dict) -> "HttpRequest":
         """ update request cookies
         """
-        try:
-            self.__cookies.update(cookies)
-        except AttributeError:
-            self.__cookies = copy.deepcopy(self.__class__.cookies or {})
-            self.__cookies.update(cookies)
-
+        self.__kwargs["cookies"].update(cookies)
         return self
 
     def set_body(self, body: Any) -> "HttpRequest":
@@ -100,52 +91,28 @@ class HttpRequest(object):
         self.__body = parse_content(self.body, kwargs)
         return self
 
-    def __get_private_attribute(self, attr_name):
-        """ get private attribute value
-
-        Args:
-            attr_name (enum str): headers, params, cookies, body
-
-        """
-        try:
-            return getattr(self, "_HttpRequest__{}".format(attr_name))
-        except AttributeError:
-            return getattr(self, attr_name)
-
     def run(self) -> "HttpResponse":
         """ make HTTP(S) request
         """
-        self.__headers = self.__get_private_attribute("headers")
-
-        kwargs = {
-            "params": self.__get_private_attribute("params"),
-            "headers": self.__headers,
-            "cookies": self.__get_private_attribute("cookies")
-        }
-
-        try:
-            kwargs.update(self.__config)
-        except AttributeError:
-            pass
-
         try:
             resp_body = self.__body
         except AttributeError:
             resp_body = self.body
 
         if isinstance(resp_body, dict):
-            if self.__headers and \
-                self.__headers.get("content-type", "").startswith("application/x-www-form-urlencoded"):
-                kwargs["data"] = json.dumps(resp_body)
+            if self.__kwargs["headers"] and \
+                self.__kwargs["headers"].get("content-type", "")\
+                    .startswith("application/x-www-form-urlencoded"):
+                self.__kwargs["data"] = json.dumps(resp_body)
             else:
-                kwargs["json"] = resp_body
+                self.__kwargs["json"] = resp_body
         else:
-            kwargs["data"] = resp_body
+            self.__kwargs["data"] = resp_body
 
         _resp_obj = self.__session.request(
             self.method,
             self.url,
-            **kwargs
+            **self.__kwargs
         )
         resp_obj = ResponseObject(_resp_obj)
         return HttpResponse(resp_obj)
