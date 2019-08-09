@@ -15,7 +15,7 @@ class EnumMethod(object):
         = ("GET", "HEAD", "POST", "PUT", "OPTIONS", "DELETE")
 
 
-class BaseApi(object):
+class HttpRequest(object):
 
     method = "GET"
     url = ""
@@ -107,7 +107,7 @@ class BaseApi(object):
 
         """
         try:
-            return getattr(self, "_BaseApi__{}".format(attr_name))
+            return getattr(self, "_HttpRequest__{}".format(attr_name))
         except AttributeError:
             return getattr(self, attr_name)
 
@@ -147,10 +147,10 @@ class BaseApi(object):
             **kwargs
         )
         resp_obj = ResponseObject(_resp_obj)
-        return ApiResponse(resp_obj)
+        return HttpResponse(resp_obj)
 
 
-class ApiResponse(object):
+class HttpResponse(object):
 
     def __init__(self, resp_obj):
         self.__resp_obj = resp_obj
