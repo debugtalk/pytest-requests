@@ -54,20 +54,14 @@ class BaseApi(object):
         }
         return self
 
-    def set_param(self, key, value):
-        """ update request param
-        """
-        param = {key: value}
-        return self.set_params(**param)
-
-    def set_params(self, **params):
+    def set_params(self, params_dict):
         """ update request params
         """
         try:
-            self.__params.update(params)
+            self.__params.update(params_dict)
         except AttributeError:
             self.__params = copy.deepcopy(self.__class__.params or {})
-            self.__params.update(params)
+            self.__params.update(params_dict)
 
         return self
 

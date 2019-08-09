@@ -18,7 +18,7 @@ def test_httpbin_get():
 
 def test_httpbin_get_with_set_params():
     ApiHttpbinGet()\
-        .set_params(abc=123, xyz=456)\
+        .set_params({"abc": 123, "xyz": 456})\
         .run()\
         .assert_status_code(200)\
         .assert_header("server", "nginx")\
@@ -29,8 +29,7 @@ def test_httpbin_get_with_set_params():
 
 def test_httpbin_get_with_multiple_set_params():
     ApiHttpbinGet()\
-        .set_param("abc", 123)\
-        .set_params(xyz=456)\
+        .set_params({"abc": 123, "xyz": 456})\
         .run()\
         .assert_status_code(200)\
         .assert_header("server", "nginx")\
@@ -104,7 +103,7 @@ def test_httpbin_post_data_in_json():
 def test_httpbin_parameters_share():
     user_id = "adk129"
     ApiHttpbinGet()\
-        .set_param("user_id", user_id)\
+        .set_params({"user_id": user_id})\
         .run()\
         .assert_status_code(200)\
         .assert_header("server", "nginx")\
@@ -168,7 +167,7 @@ def test_httpbin_login_status():
     session = requests.sessions.Session()
 
     # step1: login and get cookie
-    ApiHttpBinGetSetCookies(session).set_params(freeform="567").run()
+    ApiHttpBinGetSetCookies(session).set_params({"freeform": "567"}).run()
 
     # step2: request another api, check cookie
     resp = ApiHttpBinPost(session)\
@@ -182,7 +181,7 @@ def test_httpbin_login_status():
 def test_httpbin_redirect_allow_redirects():
     ApiHttpBinGetRedirect302()\
         .set_config(allow_redirects=False)\
-        .set_param("status_code", 302)\
+        .set_params({"status_code": 302})\
         .run()\
         .assert_status_code(302)
 

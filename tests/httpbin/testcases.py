@@ -33,7 +33,7 @@ class TestLoginStatus(BaseTestcase):
     def run_test(self):
         # step1: login and get cookie
         ApiHttpBinGetSetCookies(self.session)\
-            .set_params(freeform="567")\
+            .set_params({"freeform": "567"})\
             .run()
 
         # step2: request another api, check cookie
