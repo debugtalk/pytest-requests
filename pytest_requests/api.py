@@ -71,20 +71,14 @@ class BaseApi(object):
 
         return self
 
-    def set_header(self, key, value):
-        """ update request header
-        """
-        header = {key: value}
-        return self.set_headers(**header)
-
-    def set_headers(self, **headers):
+    def set_headers(self, headers_dict):
         """ update request headers
         """
         try:
-            self.__headers.update(headers)
+            self.__headers.update(headers_dict)
         except AttributeError:
             self.__headers = copy.deepcopy(self.__class__.headers or {})
-            self.__headers.update(headers)
+            self.__headers.update(headers_dict)
 
         return self
 

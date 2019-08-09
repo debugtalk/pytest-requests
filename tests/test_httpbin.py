@@ -66,9 +66,12 @@ def test_httpbin_post_json():
 
 
 def test_httpbin_post_form_data():
+    headers = {
+        "User-Agent": "pytest-requests",
+        "content-type": "application/x-www-form-urlencoded; charset=utf-8"
+    }
     ApiHttpBinPost()\
-        .set_header("User-Agent", "pytest-requests")\
-        .set_header("content-type", "application/x-www-form-urlencoded; charset=utf-8")\
+        .set_headers(headers)\
         .set_body("abc=123")\
         .run()\
         .assert_status_code(200)\
@@ -86,7 +89,7 @@ def test_httpbin_post_data_in_json():
         "content-type": "application/json"
     }
     ApiHttpBinPost()\
-        .set_headers(**headers)\
+        .set_headers(headers)\
         .set_body({"abc": "123"})\
         .run()\
         .assert_status_code(200)\
@@ -187,7 +190,7 @@ def test_httpbin_redirect_allow_redirects():
 def test_httpbin_get_json():
     title = ApiHttpBinGetJson()\
         .set_config(verify=False)\
-        .set_header("User-Agent", "pytest-requests")\
+        .set_headers({"User-Agent": "pytest-requests"})\
         .set_cookie("username", "debugtalk")\
         .run()\
         .assert_status_code(200)\
@@ -200,7 +203,7 @@ def test_httpbin_get_json():
 
 def test_httpbin_update_post_body():
     ApiHttpBinPostHtmlForm()\
-        .set_header("User-Agent", "pytest-requests")\
+        .set_headers({"User-Agent": "pytest-requests"})\
         .update_body(custname="leo", custtel="18699999999")\
         .run()\
         .assert_status_code(200)\
@@ -211,7 +214,7 @@ def test_httpbin_update_post_body():
         .assert_body("form.custtel", "18699999999")
 
     ApiHttpBinPostJson()\
-        .set_header("User-Agent", "pytest-requests")\
+        .set_headers({"User-Agent": "pytest-requests"})\
         .update_body(custname="leo", custtel="18699999999")\
         .run()\
         .assert_status_code(200)\
