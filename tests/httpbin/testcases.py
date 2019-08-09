@@ -37,7 +37,7 @@ class TestLoginStatus(TestCase):
 
         # step1: login and get cookie
         ApiHttpBinGetSetCookies(session)\
-            .set_params({"freeform": "567"})\
+            .set_querystring({"freeform": "567"})\
             .run()
 
         # step2: request another api, check cookie

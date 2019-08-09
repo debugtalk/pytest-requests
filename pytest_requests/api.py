@@ -54,8 +54,8 @@ class HttpRequest(object):
         }
         return self
 
-    def set_params(self, params_dict):
-        """ update request params
+    def set_querystring(self, params_dict: dict):
+        """ update request query params
         """
         try:
             self.__params.update(params_dict)
