@@ -122,13 +122,13 @@ def test_httpbin_parameters_share():
 
 def test_httpbin_extract():
     api_run = ApiHttpbinGet().run()
-    status_code = api_run.extract_("status_code")
+    status_code = api_run.get_("status_code")
     assert status_code == 200
 
-    server = api_run.extract_header("server")
+    server = api_run.get_header("server")
     assert server == "nginx"
 
-    accept_type = api_run.extract_body("headers.Accept")
+    accept_type = api_run.get_body("headers.Accept")
     assert accept_type == 'application/json'
 
 
@@ -138,8 +138,8 @@ def test_httpbin_setcookies():
         "freeform2": "456"
     }
     api_run = ApiHttpBinGetCookies().set_cookies(cookies).run()
-    freeform1 = api_run.extract_body("cookies.freeform1")
-    freeform2 = api_run.extract_body("cookies.freeform2")
+    freeform1 = api_run.get_body("cookies.freeform1")
+    freeform2 = api_run.get_body("cookies.freeform2")
     assert freeform1 == "123"
     assert freeform2 == "456"
 
@@ -148,7 +148,7 @@ def test_httpbin_parameters_extract():
     freeform = ApiHttpBinGetCookies()\
         .set_cookies({"freeform": "123"})\
         .run()\
-        .extract_body("cookies.freeform")
+        .get_body("cookies.freeform")
     assert freeform == "123"
 
     # step 2: use value as parameter
@@ -195,7 +195,7 @@ def test_httpbin_get_json():
         .assert_status_code(200)\
         .assert_header("content-Type", "application/json")\
         .assert_body("slideshow.slides[0].title", "Wake up to WonderWidgets!")\
-        .extract_body("slideshow.slides[1].title")
+        .get_body("slideshow.slides[1].title")
 
     assert title == "Overview"
 

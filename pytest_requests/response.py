@@ -31,7 +31,7 @@ class ResponseObject(object):
             # logger.log_error(err_msg)
             raise exceptions.ParamsError(err_msg)
 
-    def extract_header(self, field):
+    def get_header(self, field):
         """ extract header field.
         """
         headers = self.headers
@@ -47,7 +47,7 @@ class ResponseObject(object):
             # logger.log_error(err_msg)
             raise exceptions.ExtractFailure(err_msg)
 
-    def extract_body(self, field):
+    def get_body(self, field):
         """ extract body field with jmespath.
         """
         try:
@@ -113,8 +113,8 @@ class ResponseObject(object):
 
         # headers
         elif top_query == "headers":
-            return self.extract_header(sub_query)
+            return self.get_header(sub_query)
 
         # response body
         elif top_query in ["body", "json()"]:
-            return self.extract_body(sub_query)
+            return self.get_body(sub_query)

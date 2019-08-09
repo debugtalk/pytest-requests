@@ -156,17 +156,17 @@ class HttpResponse(object):
     def __init__(self, resp_obj: "requests.Response"):
         self.__resp_obj = resp_obj
 
-    def extract_header(self, field: str):
+    def get_header(self, field: str):
         """ extract response header field.
         """
-        return self.__resp_obj.extract_header(field)
+        return self.__resp_obj.get_header(field)
 
-    def extract_body(self, field: str):
+    def get_body(self, field: str):
         """ extract response body field, field supports jmespath
         """
-        return self.__resp_obj.extract_body(field)
+        return self.__resp_obj.get_body(field)
 
-    def extract_(self, field: str):
+    def get_(self, field: str):
         """ extract response field
 
         Args:
@@ -212,7 +212,7 @@ class HttpResponse(object):
 
         """
         return self.__assert_with_expected(
-            self.__resp_obj.extract_header(field),
+            self.__resp_obj.get_header(field),
             expected_value
         )
 
@@ -225,6 +225,6 @@ class HttpResponse(object):
 
         """
         return self.__assert_with_expected(
-            self.__resp_obj.extract_body(field),
+            self.__resp_obj.get_body(field),
             expected_value
         )
