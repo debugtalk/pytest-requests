@@ -1,3 +1,4 @@
+import types
 from typing import Any
 
 import jmespath
@@ -36,8 +37,20 @@ class HttpResponse(object):
         """
         return self.__resp_obj
 
-    def __assert_with_expected(self, actual_value, expected_value):
-        assert actual_value == expected_value
+    def __assert_with_expected(self, actual_value, expected):
+        """ Make assertion with expected value.
+            By default, assert actual_value equal to expected value.
+
+            You can also assert with custom validator.
+            e.g. assert_("status_code", gt(400))
+
+        """
+        if isinstance(expected, types.FunctionType):
+            assert expected(actual_value)
+        else:
+            # assert equal by default
+            assert actual_value == expected
+
         return self
 
     def assert_(self, field: str, expected_value: Any) -> "HttpResponse":

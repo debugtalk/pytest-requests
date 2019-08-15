@@ -1,13 +1,14 @@
-from pytest_requests import TestCase
 from demo.api.http_methods import *
+from pytest_requests import TestCase
+from pytest_requests.validators import eq, equals
 
 
 class TestHttpMethods(TestCase):
 
     def test_get(self):
         ApiHttpbinGet().run()\
-            .assert_status_code(200)\
-            .assert_header("server", "nginx")\
+            .assert_status_code(eq(200))\
+            .assert_header("server", equals("nginx"))\
             .assert_body("url", "https://httpbin.org/get?abc=111&de=222")\
             .assert_body("args", {"abc": "111", "de": "222"})\
             .assert_body("headers.Accept", 'application/json')
