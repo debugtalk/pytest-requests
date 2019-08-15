@@ -9,14 +9,13 @@ from pytest_requests.exceptions import ParamsError
 from .response import HttpResponse, ResponseObject
 
 
-class EnumHttpMethod(object):
-    ''' Enum HTTP method
-    '''
-    GET, HEAD, POST, PUT, OPTIONS, DELETE \
-        = ("GET", "HEAD", "POST", "PUT", "OPTIONS", "DELETE")
-
-
 class HttpRequest(object):
+
+    class EnumHttpMethod(object):
+        ''' Enum HTTP method
+        '''
+        GET, HEAD, POST, PUT, OPTIONS, DELETE \
+            = ("GET", "HEAD", "POST", "PUT", "OPTIONS", "DELETE")
 
     def __init__(self, session=None):
         self.__session = session or requests.sessions.Session()

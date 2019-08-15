@@ -1,1 +1,1 @@
-from .request import HttpRequest, EnumHttpMethod
+from .request import HttpRequest

@@ -1,8 +1,8 @@
-from pytest_requests import HttpRequest, EnumHttpMethod
+from pytest_requests import HttpRequest
 
 
 class ApiHttpBinGetJson(HttpRequest):
 
-    method = EnumHttpMethod.GET
+    method = HttpRequest.EnumHttpMethod.GET
     url = "https://httpbin.org/json"
 
