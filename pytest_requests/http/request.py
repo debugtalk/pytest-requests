@@ -12,8 +12,8 @@ from .response import HttpResponse, ResponseObject
 class HttpRequest(object):
 
     class EnumHttpMethod(object):
-        ''' Enum HTTP method
-        '''
+        """ Enum HTTP method
+        """
         GET, HEAD, POST, PUT, OPTIONS, DELETE \
             = ("GET", "HEAD", "POST", "PUT", "OPTIONS", "DELETE")
 

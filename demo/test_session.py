@@ -19,11 +19,11 @@ class TestUpdatePostBody(TestCase):
             .set_body(form_data_body)\
             .run()\
             .assert_status_code(200)\
-            .assert_header("Content-Type", "application/json")\
-            .assert_body("form.comments", "hello world")\
-            .assert_body("form.topping[0]", "cheese")\
-            .assert_body("form.custname", "leo")\
-            .assert_body("form.custtel", "18699999999")
+            .assert_header("Content-Type").equals("application/json")\
+            .assert_body("form.comments").equals("hello world")\
+            .assert_body("form.topping[0]").equals("cheese")\
+            .assert_body("form.custname").equals("leo")\
+            .assert_body("form.custtel").equals("18699999999")
 
         json_body = self.parse_body(ApiHttpBinPostJson.body, kwargs)
         ApiHttpBinPostJson(session)\
@@ -31,11 +31,11 @@ class TestUpdatePostBody(TestCase):
             .set_body(json_body)\
             .run()\
             .assert_status_code(200)\
-            .assert_header("Content-Type", "application/json")\
-            .assert_body("json.comments", "hello world")\
-            .assert_body("json.topping[0]", "cheese")\
-            .assert_body("json.custname", "leo")\
-            .assert_body("json.custtel", "18699999999")
+            .assert_header("Content-Type").equals("application/json")\
+            .assert_body("json.comments").equals("hello world")\
+            .assert_body("json.topping[0]").equals("cheese")\
+            .assert_body("json.custname").equals("leo")\
+            .assert_body("json.custtel").equals("18699999999")
 
 
 class TestLoginStatus(TestCase):
