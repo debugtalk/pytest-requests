@@ -13,23 +13,28 @@ class Validator(object):
         self.__actual_value = actual_value
 
     def equals(self, expected_value) -> "HttpResponse":
-        assert self.__actual_value == expected_value
+        actual_value = self.__actual_value
+        assert actual_value == expected_value
         return self.__http_response
 
     def greater_than(self, expected_value) -> "HttpResponse":
-        assert self.__actual_value > expected_value
+        actual_value = self.__actual_value
+        assert actual_value > expected_value
         return self.__http_response
 
     def less_than(self, expected_value) -> "HttpResponse":
-        assert self.__actual_value < expected_value
+        actual_value = self.__actual_value
+        assert actual_value < expected_value
         return self.__http_response
 
     def greater_than_or_equals(self, expected_value) -> "HttpResponse":
-        assert self.__actual_value >= expected_value
+        actual_value = self.__actual_value
+        assert actual_value >= expected_value
         return self.__http_response
 
     def less_than_or_equals(self, expected_value) -> "HttpResponse":
-        assert self.__actual_value <= expected_value
+        actual_value = self.__actual_value
+        assert actual_value <= expected_value
         return self.__http_response
 
 
