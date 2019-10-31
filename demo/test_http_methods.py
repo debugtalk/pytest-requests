@@ -10,7 +10,7 @@ class TestHttpMethods(TestCase):
             .assert_("status_code").less_than(300)\
             .assert_header("server").equals("nginx")\
             .assert_body("url").equals("https://httpbin.org/get?abc=111&de=222")\
-            .assert_body("args").equals({"abc": "111", "de": "222"})\
+            .assert_body("args").equals({"abc": "111", "de": "221"})\
             .assert_body("headers.Accept").equals('application/json')
 
     def test_get_with_querystring(self):
